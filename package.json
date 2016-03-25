@@ -1,6 +1,6 @@
 {
   "name": "bitcoinex",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "An easy api let developer get exchanges current bitcoin price.",
   "main": "bitcoinex.js",
   "scripts": {
@@ -8,8 +8,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/HuangJi/bitcoinex"
+    "url": "git@github.com:HuangJi/bitcoinex.git"
   },
+  "homepage": "https://github.com/HuangJi/bitcoinex",
   "keywords": [
     "bitcoin",
     "price",
