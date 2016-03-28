@@ -8,8 +8,10 @@ var COINBASE_SPOT_PRICE_API = 'https://api.coinbase.com/v2/exchange-rates?curren
 	BITSTAMP_EXCHANGE_PRICE_API = 'https://www.bitstamp.net/api/ticker/',
 	BITFINEX_EXCHANGE_PRICE_API = 'https://api.bitfinex.com/v1/pubticker/BTCUSD',
 	OKCOIN_EXCHANGE_PRICE_API = 'https://www.okcoin.com/api/v1/ticker.do?symbol=btc_usd',
+	ITBIT_EXCHANGE_PRICE_API = 'https://api.itbit.com/v1/markets/XBTUSD/ticker',
 	MAICOIN_USD_PRICE_API = 'https://api.maicoin.com/v1/prices/usd',
 	OKCOIN_USD_PRICE_API = 'https://www.okcoin.com/api/ticker.do?ok=1',
+	ITBIT_EXCHANGE_PRICE_API = 'https://api.itbit.com/v1/markets/XBTUSD/ticker',
 	BITOEX_USD_PRICE_API = 'https://www.bitoex.com/api/v1/get_rate',
 	DAILY_USD_PRICE_API = 'https://api.coinbase.com/v2/prices/historic?days=1',
 	USD_EXCHANGE_RATES_API = 'https://api.coinbase.com/v2/exchange-rates?currency=USD';
@@ -41,12 +43,15 @@ function getExchangeRates(callback) {
 	});
 }
 
-function handleResult(err, result) {
-	if (err) {
-		console.error(err.stack || err.message);
-		return;
-	}
-	return result;
+function getPriceObject(exchangeName, currency, high, low, last) {
+	var priceObject = {
+        exchangeName: exchangeName,
+        currency: currency,
+        high: parseFloat(high),
+        low: parseFloat(low),
+        last: parseFloat(last)
+    };
+    return priceObject;
 }
 
 function convertRate(priceObject, currency, callback) {
@@ -81,15 +86,10 @@ function getPriceWith(exchangeName, currency, callback) {
 		request(getOptions(COINBASE_EXCHANGE_PRICE_API), function(error, response, body) {
 			if (error) {
 				console.error(error);
+                callback(error, null);
 			}
 			else {
-				var priceObject = {};
-				priceObject = {
-					exchangeName: exchangeName,
-					currency: currency,
-					high: parseFloat(body.high),
-					low: parseFloat(body.low)
-				};
+				var priceObject = getPriceObject(exchangeName, currency, body.high, body.low, null);
 				request(getOptions(COINBASE_SPOT_PRICE_API), function(error, response, body) {
 					priceObject.last = parseFloat(body.data.rates.USD);
 					convertRate(priceObject, currency, function(err, convertedObject) {
@@ -103,20 +103,13 @@ function getPriceWith(exchangeName, currency, callback) {
 		request(getOptions(BITSTAMP_EXCHANGE_PRICE_API), function(error, response, body) {
 			if (error) {
 				console.error(error);
-				// callback(error, priceObject);
+				callback(error, null);
 			}
 			else {
-				var priceObject = {
-					exchangeName: exchangeName,
-					currency: currency,
-					high: parseFloat(body.high),
-					low: parseFloat(body.low),
-					last: parseFloat(body.last)
-				};
+                var priceObject = getPriceObject(exchangeName, currency, body.high, body.low, body.last);
 				convertRate(priceObject, currency, function(err, convertedObject) {
 					callback(null, convertedObject);
 				});
-				// callback(null, priceObject);
 			}
 		});
 	}
@@ -124,20 +117,13 @@ function getPriceWith(exchangeName, currency, callback) {
 		request(getOptions(BITFINEX_EXCHANGE_PRICE_API), function(error, response, body) {
 			if (error) {
 				console.error(error);
-				// callback(error, priceObject);
+				callback(error, null);
 			}
 			else {
-				var priceObject = {
-					exchangeName: exchangeName,
-					currency: currency,
-					high: parseFloat(body.high),
-					low: parseFloat(body.low),
-					last: parseFloat(body.last_price)
-				};
+                var priceObject = getPriceObject(exchangeName, currency, body.high, body.low, body.last_price);
 				convertRate(priceObject, currency, function(err, convertedObject) {
 					callback(null, convertedObject);
 				});
-				// callback(null, priceObject);
 			}
 		});
 	}
@@ -145,19 +131,27 @@ function getPriceWith(exchangeName, currency, callback) {
 		request(getOptions(OKCOIN_EXCHANGE_PRICE_API), function(error, response, body) {
 			if (error) {
 				console.error(error);
+                callback(error, null);
 			}
 			else {
-				var priceObject = {
-					exchangeName: exchangeName,
-					currency: currency,
-					high: parseFloat(body.ticker.high),
-					low: parseFloat(body.ticker.low),
-					last: parseFloat(body.ticker.last)
-				};
+                var priceObject = getPriceObject(exchangeName, currency, body.ticker.high, body.ticker.low, body.ticker.last);
 				convertRate(priceObject, currency, function(err, convertedObject) {
 					callback(null, convertedObject);
 				});
-				// callback(null, priceObject);
+			}
+		});
+	}
+	else if (exchangeName === 'itbit') {
+		request(getOptions(ITBIT_EXCHANGE_PRICE_API), function(error, response, body) {
+			if (error) {
+				console.error(error);
+                callback(error, null);
+			}
+			else {
+                var priceObject = getPriceObject(exchangeName, currency, body.highToday, body.lowToday, body.lastPrice);
+				convertRate(priceObject, currency, function(err, convertedObject) {
+					callback(null, convertedObject);
+				});
 			}
 		});
 	}
@@ -169,5 +163,4 @@ function getPriceWith(exchangeName, currency, callback) {
 module.exports = {
     getPriceWith: getPriceWith,
     getExchangeRates: getExchangeRates,
-    handleResult: handleResult
 }

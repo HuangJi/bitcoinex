@@ -3,8 +3,8 @@ var expect = require('chai').expect;
 var rp = require('request-promise');
 var request = require('request');
 
-describe('Test method \'getPriceWith\' with Coinbase API.', function() {
-  it('should be right type', function(done) {
+describe('Test method \'getPriceWith\' with several exchanges and multiple currency.', function() {
+  it('Coinbase API with usd currency', function(done) {
     bitcoinex.getPriceWith('coinbase', 'usd', function(err, convertedObject) {
       expect(convertedObject.high).to.be.a('number');
       expect(convertedObject.last).to.be.a('number');
@@ -12,10 +12,7 @@ describe('Test method \'getPriceWith\' with Coinbase API.', function() {
       done();
     });
   });
-});
-
-describe('Test method \'getPriceWith\' with Bitstamp API.', function() {
-  it('should be right type', function(done) {
+  it('Bitstamp API with twd currency', function(done) {
     bitcoinex.getPriceWith('bitstamp', 'twd', function(err, convertedObject) {
       console.log(convertedObject);
       expect(convertedObject.high).to.be.a('number');
@@ -25,10 +22,7 @@ describe('Test method \'getPriceWith\' with Bitstamp API.', function() {
       done();
     });
   });
-});
-
-describe('Test method \'getPriceWith\' with Okcoin API.', function() {
-  it('should be right type', function(done) {
+  it('Okcoin API with usd currency', function(done) {
     bitcoinex.getPriceWith('okcoin', 'usd', function(err, convertedObject) {
       console.log(convertedObject);
       expect(convertedObject.high).to.be.a('number');
@@ -37,10 +31,25 @@ describe('Test method \'getPriceWith\' with Okcoin API.', function() {
       done();
     });
   });
-});
-
-describe('Test method \'getPriceWith\' with cny currency and Coinbase API.', function() {
-  it('should be right type', function(done) {
+  it('Okcoin API with cny currency', function(done) {
+    bitcoinex.getPriceWith('okcoin', 'cny', function(err, convertedObject) {
+      console.log(convertedObject);
+      expect(convertedObject.high).to.be.a('number');
+      expect(convertedObject.last).to.be.a('number');
+      expect(convertedObject.low).to.be.a('number');
+      done();
+    });
+  });
+  it('Bitstamp API with eur currency', function(done) {
+    bitcoinex.getPriceWith('bitstamp', 'eur', function(err, convertedObject) {
+      console.log(convertedObject);
+      expect(convertedObject.high).to.be.a('number');
+      expect(convertedObject.last).to.be.a('number');
+      expect(convertedObject.low).to.be.a('number');
+      done();
+    });
+  });
+  it('Coinbase API with cny currency', function(done) {
     bitcoinex.getPriceWith('coinbase', 'cny', function(err, convertedObject) {
       console.log(convertedObject);
       expect(convertedObject.high).to.be.a('number');
@@ -50,11 +59,17 @@ describe('Test method \'getPriceWith\' with cny currency and Coinbase API.', fun
       done();
     });
   });
-});
-
-describe('Test method \'getPriceWith\' with eur currency and Bitfinex API.', function() {
-  it('should be right type', function(done) {
+  it('Bitfinex API with eur currency', function(done) {
     bitcoinex.getPriceWith('bitfinex', 'eur', function(err, convertedObject) {
+      console.log(convertedObject);
+      expect(convertedObject.high).to.be.a('number');
+      expect(convertedObject.last).to.be.a('number');
+      expect(convertedObject.low).to.be.a('number');
+      done();
+    });
+  });
+  it('Itbit API with twd currency', function(done) {
+    bitcoinex.getPriceWith('itbit', 'twd', function(err, convertedObject) {
       console.log(convertedObject);
       expect(convertedObject.high).to.be.a('number');
       expect(convertedObject.last).to.be.a('number');
