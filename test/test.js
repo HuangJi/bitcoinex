@@ -28,52 +28,25 @@ describe('url', function() {
   });
 });
 
-describe('Coinbase API using rp directly', function() {
-  it('should be right currency', function() {
-  	var options = {
-	    uri:'https://api.coinbase.com/v2/prices/spot',
-	    headers: {
-	        'User-Agent': 'Request-Promise'
-	    },
-	    json:true 
-		};
-		rp(options)
-			.then(function(body) {
-				expect(body.data.currency).to.equal('USD');
-			})
-			.catch(function(err) {
-				console.log('error!');
-				return err;
-		});
-  });
-});
-
-describe('Coinbase API using bitcoinex api', function() {
-  it('should be right currency type', function(done) {
-    // expect(1).to.equal(99);
-  	bitcoinex.getCoinbaseUSDPrice()
-  		.then(function (body) {
-	  		// console.log(body);
-        expect(2).to.equal(2);
-        expect(body).to.have.property('data');
-        expect(parseFloat(body.data.amount)).to.be.a('number');
-		  	expect(body.data.currency).to.equal('USD');
-        done();
-  	});
-  });
-});
-
-describe('Bitstamp API using bitcoinex api', function() {
+describe('Test method \'getPriceWith\' with Coinbase API.', function() {
   it('should be right type', function(done) {
-    // expect(1+2).to.equal(33);
+    bitcoinex.getPriceWith('coinbase', 'usd', function(err, priceObject) {
+      expect(parseFloat(priceObject.high)).to.be.a('number');
+      expect(parseFloat(priceObject.now)).to.be.a('number');
+      expect(parseFloat(priceObject.low)).to.be.a('number');
+      done();
+    });
+  });
+});
 
-    bitcoinex.getBitstampUSDPrice()
-      .then(function (body) {
-        // expect(1+2).to.equal(3);
-        // console.log(body);
-        // expect(1).to.equal(1);
-        expect(parseFloat(body.last)).to.be.a('number');
-        done();
+describe('Test method \'getPriceWith\' with Bitstamp API.', function() {
+  it('should be right type', function(done) {
+    bitcoinex.getPriceWith('bitstamp', 'usd', function(err, priceObject) {
+      expect(parseFloat(priceObject.high)).to.be.a('number');
+      expect(parseFloat(priceObject.now)).to.be.a('number');
+      expect(parseFloat(priceObject.low)).to.be.a('number');
+      expect(parseFloat(priceObject.high)).to.be.above(parseFloat(priceObject.low));
+      done();
     });
   });
 });

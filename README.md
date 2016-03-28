@@ -1,6 +1,10 @@
 # Bitcoinex
 
-Expect to support exchanges real time price as below in 0.2.x:
+An easy API library let developers get exchanges real time bitcoin price.
+
+Now only supporting Coinbase, Bitstamp, Bitfinex real time prices.
+
+I Expected to support exchanges real time price as below in 0.2.x:
 
 - Coinbase
 - Bitstamp
@@ -9,18 +13,38 @@ Expect to support exchanges real time price as below in 0.2.x:
 - Bitoex
 - OKCoin
 
+And another market information in 0.3.x, welcome to open issues.
+
 ## Usage
+
+### Install
 
 ```
 npm install bitcoinex
 ```
-
+### Example
 ```js
-
 var bitcoinex = require('bitcoinex');
 
-bitcoinex.getAveragePrice('coinbase', 'usd'); // {exchangeName, currency}
-// it will return {currency:'usd', price: 412.42}
+// (exchaneName, currency, callback)
+// exchangeName now only support 'coinable', 'bitstamp', 'bitfinex'
+// currency now only support 'usd'
+
+bitcoinex.getPriceWith('bitstamp', 'usd', function(err, priceObject) {
+	if (err) {
+		console.error(err);
+	}
+	else {
+		console.log(priceObject.now);
+	}
+	/* priceObject
+	{ exchangeName: 'bitstamp',
+      currency: 'usd',
+      high: 427.99,
+      low: 415.82,
+      now: 423 }
+    */
+}
 ```
 
-### coming soon...
+### v0.2.x is coming soon...
