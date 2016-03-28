@@ -3,37 +3,12 @@ var expect = require('chai').expect;
 var rp = require('request-promise');
 var request = require('request');
 
-
-describe('less than 64 bytes', function() {
-  it('should be successful', function() {
-    expect('avc').to.equal('avc');
-  });
-});
-
-describe('Coinbase API', function() {
-  it('should be right amount', function() {
-    expect(bitcoinex.getUSD()).to.equal(123);
-  });
-});
-
-describe('fuck API', function() {
-  it('should be right amount', function() {
-    expect(1+2).to.equal(3);
-  });
-});
-
-describe('url', function() {
-  it('should be right amount', function() {
-    expect(bitcoinex.URL).to.equal('abcdefg');
-  });
-});
-
 describe('Test method \'getPriceWith\' with Coinbase API.', function() {
   it('should be right type', function(done) {
-    bitcoinex.getPriceWith('coinbase', 'usd', function(err, priceObject) {
-      expect(parseFloat(priceObject.high)).to.be.a('number');
-      expect(parseFloat(priceObject.now)).to.be.a('number');
-      expect(parseFloat(priceObject.low)).to.be.a('number');
+    bitcoinex.getPriceWith('coinbase', 'usd', function(err, convertedObject) {
+      expect(convertedObject.high).to.be.a('number');
+      expect(convertedObject.last).to.be.a('number');
+      expect(convertedObject.low).to.be.a('number');
       done();
     });
   });
@@ -41,11 +16,49 @@ describe('Test method \'getPriceWith\' with Coinbase API.', function() {
 
 describe('Test method \'getPriceWith\' with Bitstamp API.', function() {
   it('should be right type', function(done) {
-    bitcoinex.getPriceWith('bitstamp', 'usd', function(err, priceObject) {
-      expect(parseFloat(priceObject.high)).to.be.a('number');
-      expect(parseFloat(priceObject.now)).to.be.a('number');
-      expect(parseFloat(priceObject.low)).to.be.a('number');
-      expect(parseFloat(priceObject.high)).to.be.above(parseFloat(priceObject.low));
+    bitcoinex.getPriceWith('bitstamp', 'twd', function(err, convertedObject) {
+      console.log(convertedObject);
+      expect(convertedObject.high).to.be.a('number');
+      expect(convertedObject.last).to.be.a('number');
+      expect(convertedObject.low).to.be.a('number');
+      expect(convertedObject.low).to.be.above(10000);
+      done();
+    });
+  });
+});
+
+describe('Test method \'getPriceWith\' with Okcoin API.', function() {
+  it('should be right type', function(done) {
+    bitcoinex.getPriceWith('okcoin', 'usd', function(err, convertedObject) {
+      console.log(convertedObject);
+      expect(convertedObject.high).to.be.a('number');
+      expect(convertedObject.last).to.be.a('number');
+      expect(convertedObject.low).to.be.a('number');
+      done();
+    });
+  });
+});
+
+describe('Test method \'getPriceWith\' with cny currency and Coinbase API.', function() {
+  it('should be right type', function(done) {
+    bitcoinex.getPriceWith('coinbase', 'cny', function(err, convertedObject) {
+      console.log(convertedObject);
+      expect(convertedObject.high).to.be.a('number');
+      expect(convertedObject.last).to.be.a('number');
+      expect(convertedObject.low).to.be.a('number');
+      expect(convertedObject.low).to.be.above(1000);
+      done();
+    });
+  });
+});
+
+describe('Test method \'getPriceWith\' with eur currency and Bitfinex API.', function() {
+  it('should be right type', function(done) {
+    bitcoinex.getPriceWith('bitfinex', 'eur', function(err, convertedObject) {
+      console.log(convertedObject);
+      expect(convertedObject.high).to.be.a('number');
+      expect(convertedObject.last).to.be.a('number');
+      expect(convertedObject.low).to.be.a('number');
       done();
     });
   });

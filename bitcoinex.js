@@ -7,19 +7,12 @@ var COINBASE_SPOT_PRICE_API = 'https://api.coinbase.com/v2/exchange-rates?curren
 	COINBASE_EXCHANGE_PRICE_API = 'https://api.exchange.coinbase.com//products/BTC-USD/stats',
 	BITSTAMP_EXCHANGE_PRICE_API = 'https://www.bitstamp.net/api/ticker/',
 	BITFINEX_EXCHANGE_PRICE_API = 'https://api.bitfinex.com/v1/pubticker/BTCUSD',
+	OKCOIN_EXCHANGE_PRICE_API = 'https://www.okcoin.com/api/v1/ticker.do?symbol=btc_usd',
 	MAICOIN_USD_PRICE_API = 'https://api.maicoin.com/v1/prices/usd',
 	OKCOIN_USD_PRICE_API = 'https://www.okcoin.com/api/ticker.do?ok=1',
 	BITOEX_USD_PRICE_API = 'https://www.bitoex.com/api/v1/get_rate',
 	DAILY_USD_PRICE_API = 'https://api.coinbase.com/v2/prices/historic?days=1',
 	USD_EXCHANGE_RATES_API = 'https://api.coinbase.com/v2/exchange-rates?currency=USD';
-
-var USDTWD, USDEUR, USDCNY;
-
-function getAveragePrice(exchangeName, currency) {
-	if (exchangeName === 'coinbase') {
-		getCoinbaseUSDPrice();
-	}
-}
 
 function getOptions(url) {
 	var options = {
@@ -32,38 +25,55 @@ function getOptions(url) {
 	return options;
 }
 
-function getUSD() {
-	return 123;
+function getExchangeRates(callback) {
+	request(getOptions(USD_EXCHANGE_RATES_API), function(error, response, body) {
+		if (error) {
+			console.error(error);
+		}
+		else {
+			var ratesObject = {
+				usdtwd: body.data.rates.TWD,
+				usdeur: body.data.rates.EUR,
+				usdcny: body.data.rates.CNY
+			};
+			callback(null, ratesObject);
+		}
+	});
 }
 
-
-function getExchangeRates(currency, callback) {
-	request(getOptions(url), function(error, response, body) {
-		if( !error && response.statusCode === 200 ) {
-            if (currency === 'USDTWD') {
-				return callback(null, body)
-			}
-			else {
-				return callback(null, 'fuck');
-			}
-        }
-        else {
-            //something went wrong, fail out
-            return callback(error);
-        }
-	})
+function handleResult(err, result) {
+	if (err) {
+		console.error(err.stack || err.message);
+		return;
+	}
+	return result;
 }
 
-function getCoinbasePrice() {
-	return rp(getOptions(COINBASE_PRICE_API))
-		.then(function(body) {
-			console.log(body);
-			return body;
-		})
-		.catch(function(err) {
-			console.log('error!');
-			return err;
-		});
+function convertRate(priceObject, currency, callback) {
+	getExchangeRates(function (err, ratesObject) {
+		if (err) {
+			console.error(err);
+		}
+		else {
+			if (currency === 'usd') ;
+			else if (currency === 'twd') {
+				priceObject.high = priceObject.high * ratesObject.usdtwd;
+				priceObject.low = priceObject.low * ratesObject.usdtwd;
+				priceObject.last = priceObject.last * ratesObject.usdtwd;
+			}
+			else if (currency === 'eur') {
+				priceObject.high = priceObject.high * ratesObject.usdeur;
+				priceObject.low = priceObject.low * ratesObject.usdeur;
+				priceObject.last = priceObject.last * ratesObject.usdeur;
+			}
+			else if (currency === 'cny') {
+				priceObject.high = priceObject.high * ratesObject.usdcny;
+				priceObject.low = priceObject.low * ratesObject.usdcny;
+				priceObject.last = priceObject.last * ratesObject.usdcny;
+			}
+		}
+		callback(null, priceObject);
+	});
 }
 
 function getPriceWith(exchangeName, currency, callback) {
@@ -74,18 +84,17 @@ function getPriceWith(exchangeName, currency, callback) {
 			}
 			else {
 				var priceObject = {};
-				// console.log(body);
 				priceObject = {
 					exchangeName: exchangeName,
 					currency: currency,
 					high: parseFloat(body.high),
 					low: parseFloat(body.low)
 				};
-				// console.log(priceObject);
 				request(getOptions(COINBASE_SPOT_PRICE_API), function(error, response, body) {
-					priceObject.now = parseFloat(body.data.rates.USD);
-					console.log(priceObject);
-					callback(null, priceObject);
+					priceObject.last = parseFloat(body.data.rates.USD);
+					convertRate(priceObject, currency, function(err, convertedObject) {
+						callback(null, convertedObject);
+					});
 				});
 			}
 		});
@@ -102,9 +111,12 @@ function getPriceWith(exchangeName, currency, callback) {
 					currency: currency,
 					high: parseFloat(body.high),
 					low: parseFloat(body.low),
-					now: parseFloat(body.last)
+					last: parseFloat(body.last)
 				};
-				callback(null, priceObject);
+				convertRate(priceObject, currency, function(err, convertedObject) {
+					callback(null, convertedObject);
+				});
+				// callback(null, priceObject);
 			}
 		});
 	}
@@ -120,9 +132,32 @@ function getPriceWith(exchangeName, currency, callback) {
 					currency: currency,
 					high: parseFloat(body.high),
 					low: parseFloat(body.low),
-					now: parseFloat(body.last_price)
+					last: parseFloat(body.last_price)
 				};
-				callback(null, priceObject);
+				convertRate(priceObject, currency, function(err, convertedObject) {
+					callback(null, convertedObject);
+				});
+				// callback(null, priceObject);
+			}
+		});
+	}
+	else if (exchangeName === 'okcoin') {
+		request(getOptions(OKCOIN_EXCHANGE_PRICE_API), function(error, response, body) {
+			if (error) {
+				console.error(error);
+			}
+			else {
+				var priceObject = {
+					exchangeName: exchangeName,
+					currency: currency,
+					high: parseFloat(body.ticker.high),
+					low: parseFloat(body.ticker.low),
+					last: parseFloat(body.ticker.last)
+				};
+				convertRate(priceObject, currency, function(err, convertedObject) {
+					callback(null, convertedObject);
+				});
+				// callback(null, priceObject);
 			}
 		});
 	}
@@ -132,13 +167,7 @@ function getPriceWith(exchangeName, currency, callback) {
 }
 
 module.exports = {
-    getCoinbasePrice: getCoinbasePrice,
-    getAveragePrice: getAveragePrice,
-    getExchangeRates: getExchangeRates,
     getPriceWith: getPriceWith,
-    URL: 'abcdefg',
-    getUSD: getUSD,
-    USDTWD: USDTWD,
-    USDEUR: USDEUR,
-    USDCNY: USDCNY
+    getExchangeRates: getExchangeRates,
+    handleResult: handleResult
 }

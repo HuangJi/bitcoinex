@@ -1,17 +1,22 @@
 var bitcoinex = require('./bitcoinex');
 
-bitcoinex.getPriceWith('bitstamp', 'usd', function(err, priceObject) {
+bitcoinex.getPriceWith('okcoin', 'twd', function(err, result) {
 	if (err) {
 		console.error(err);
 	}
 	else {
-		console.log(priceObject.now);
+		console.log(result.last);
+		console.log(result);
 	}
-	/* priceObject
-	{ exchangeName: 'bitstamp',
-      currency: 'usd',
-      high: 427.99,
-      low: 415.82,
-      now: 423 }
-    */
-}
+});
+
+bitcoinex.getPriceWith('bitfinex', 'eur', function(err, result) {
+	if (err) {
+		console.error(err);
+	}
+	else {
+		console.log(result);
+	}
+});
+
+
