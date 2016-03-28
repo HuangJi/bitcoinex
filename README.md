@@ -44,7 +44,7 @@ bitcoinex.getPriceWith('bitstamp', 'usd', function(err, priceObject) {
 });
 ```
 
-Or, you can just use example.js
+Or, you can just try example.js and see what would happen.
 
 ```
 node example.js
