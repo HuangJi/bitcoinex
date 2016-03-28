@@ -4,7 +4,7 @@
   "description": "An easy api let developer get exchanges current bitcoin price.",
   "main": "bitcoinex.js",
   "scripts": {
-    "test": "mocha test/test.js --timeout 5000"
+    "test": "mocha test/test.js --timeout 4800"
   },
   "repository": {
     "type": "git",
