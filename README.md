@@ -1,4 +1,4 @@
-# Bitcoinex
+# Bitcoinex [![Build Status](https://travis-ci.org/HuangJi/bitcoinex.svg?branch=master)](https://travis-ci.org/HuangJi/bitcoinex)
 
 An easy API library let developers get exchanges real time bitcoin price.
 
