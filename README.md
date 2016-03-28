@@ -27,7 +27,7 @@ npm install bitcoinex
 var bitcoinex = require('bitcoinex');
 
 // (exchaneName, currency, callback)
-// exchangeName now only support 'coinable', 'bitstamp', 'bitfinex'
+// exchangeName now only support 'coinbase', 'bitstamp', 'bitfinex'
 // currency now only support 'usd'
 
 bitcoinex.getPriceWith('bitstamp', 'usd', function(err, priceObject) {
@@ -44,7 +44,7 @@ bitcoinex.getPriceWith('bitstamp', 'usd', function(err, priceObject) {
       low: 415.82,
       now: 423 }
     */
-}
+});
 ```
 
 ### v0.2.x is coming soon...

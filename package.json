@@ -1,6 +1,6 @@
 {
   "name": "bitcoinex",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "An easy api let developer get exchanges current bitcoin price.",
   "main": "bitcoinex.js",
   "scripts": {
@@ -23,6 +23,7 @@
   "license": "MIT",
   "dependencies": {
     "chai": "^3.5.0",
+    "request": "^2.69.0",
     "request-promise": "^2.0.1"
   }
 }
