@@ -1,10 +1,10 @@
 {
   "name": "bitcoinex",
-  "version": "0.1.9",
+  "version": "0.2.0",
   "description": "An easy api let developer get exchanges current bitcoin price.",
   "main": "bitcoinex.js",
   "scripts": {
-    "test": "mocha test/test.js --timeout 6000"
+    "test": "mocha test/test.js --timeout 8000"
   },
   "repository": {
     "type": "git",
