@@ -48,7 +48,13 @@ Bitcoinex.prototype.getBrokerPriceWith = function(exchangeName, currency, callba
                 callback(error, null);
             }
             else {
-                callback(null, body);
+                var priceObject = {
+                    source: exchangeName,
+                    currencyType: currency,
+                    sellPrice: parseFloat(body['sell_price']),
+                    buyPrice: parseFloat(body['buy_price'])
+                }
+                callback(null, priceObject);
             }
         });
     }
@@ -59,7 +65,13 @@ Bitcoinex.prototype.getBrokerPriceWith = function(exchangeName, currency, callba
                 callback(error, null);
             }
             else {
-                callback(null, body);
+                var priceObject = {
+                    source: exchangeName,
+                    currencyType: currency,
+                    sellPrice: parseFloat(body['sell']),
+                    buyPrice: parseFloat(body['buy'])
+                }
+                callback(null, priceObject);
             }
         });
     }

@@ -2,8 +2,6 @@ var bitcoinex = require('./bitcoinex');
 
 bitcoinex.getBrokerPriceWith('maicoin', 'twd', function(err, result) {
 	console.log(result);
-	console.log(parseInt(result['buy_price']));
-
 });
 
 bitcoinex.getBrokerPriceWith('bitoex', 'twd', function(err, result) {
